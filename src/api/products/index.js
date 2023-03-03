@@ -5,7 +5,7 @@ import multer from "multer";
 import {dirname, extname, join} from "path"
 import {fileURLToPath} from "url"
 import {v4 as uuidv4} from "uuid"
-import { checkProductSchema, checkReviewSchema, triggerBadRequest } from "../validate.js"
+import { checkProductSchema, checkProductUpdateSchema, checkReviewSchema, triggerBadRequest } from "../validate.js"
 import { getProducts, setProducts, getReviews, setReviews, saveProductImage} from "../../lib/tools.js";
 import { port } from "../../server.js";
 
@@ -52,7 +52,7 @@ productsRouter.get("/:productId", async (req, res, next) => {
     }
 })
 
-productsRouter.put("/:productId", checkProductSchema, triggerBadRequest, async (req, res, next) => {
+productsRouter.put("/:productId", checkProductUpdateSchema, triggerBadRequest, async (req, res, next) => {
     try {
         const products = await getProducts()
         const i = products.findIndex(p => p.id === req.params.productId)
@@ -89,11 +89,15 @@ productsRouter.post("/:productId/upload", multer().single("image"), async (req, 
         const products = await getProducts()
         const i = products.findIndex(p => p.id === req.params.productId)
         if (i !== -1) {
-            const filename = req.params.productId + extname(req.file.originalname)
-            await saveProductImage(filename, req.file.buffer)
-            products[i] = {...products[i], imageUrl: `http://localhost:${port}/immg/products/${filename}`, updatedAt: new Date()}
-            await setProducts(products)
-            res.send({message: `image uploaded for ${req.params.productId}`})
+            if (req.file) {
+                const filename = req.params.productId + extname(req.file.originalname)
+                await saveProductImage(filename, req.file.buffer)
+                products[i] = {...products[i], imageUrl: `http://localhost:${port}/immg/products/${filename}`, updatedAt: new Date()}
+                await setProducts(products)
+                res.send({message: `image uploaded for ${req.params.productId}`})
+            } else {
+                next(createHttpError(400, `no image provided`))
+            }
         } else {
             next(createHttpError(404, `no product found with id ${req.params.productId}`))
         }

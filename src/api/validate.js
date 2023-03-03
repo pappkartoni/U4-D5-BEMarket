@@ -42,6 +42,52 @@ const productSchema = {
     },
 }
 
+const productUpdateSchema = {
+    name: {
+        in: ["body"],
+        optional: { options: { nullable: true } },
+        isString: {
+          errorMessage: "name must be String",
+        },
+    },
+    description: {
+        in: ["body"],
+        optional: { options: { nullable: true } },
+        isString: {
+          errorMessage: "description must be String",
+        },
+    },
+    brand: {
+        in: ["body"],
+        optional: { options: { nullable: true } },
+        isString: {
+          errorMessage: "brand must be String",
+        },
+    },
+    imageUrl: {
+        in: ["body"],
+        optional: { options: { nullable: true } },
+        isURL: {
+            errorMessage: "imageUrl must be valid url to image",
+        },
+    },
+    price: {
+        in: ["body"],
+        optional: { options: { nullable: true } },
+        isInt: {
+          errorMessage: "price must be nonnegative Int", //this should probably be float
+          options: {min: 0}
+        },
+    },
+    category: {
+        in: ["body"],
+        optional: { options: { nullable: true } },
+        isString: {
+          errorMessage: "category must be String",
+        },
+    },
+}
+
 const reviewSchema = {
     comment: {
         in: ["body"],
@@ -65,6 +111,7 @@ const reviewSchema = {
 }
 
 export const checkProductSchema = checkSchema(productSchema)
+export const checkProductUpdateSchema = checkSchema(productUpdateSchema)
 export const checkReviewSchema = checkSchema(reviewSchema)
 
 export const triggerBadRequest = (req, res, next) => {
