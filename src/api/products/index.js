@@ -5,7 +5,7 @@ import multer from "multer";
 import {dirname, extname, join} from "path"
 import {fileURLToPath} from "url"
 import {v4 as uuidv4} from "uuid"
-import { checkProductSchema, checkProductUpdateSchema, checkReviewSchema, triggerBadRequest } from "../validate.js"
+import { checkProductSchema, checkProductUpdateSchema, checkReviewSchema, checkReviewUpdateSchema, triggerBadRequest } from "../validate.js"
 import { getProducts, setProducts, getReviews, setReviews, saveProductImage} from "../../lib/tools.js";
 import { port } from "../../server.js";
 
@@ -161,7 +161,7 @@ productsRouter.get("/:productId/reviews/:reviewId", async (req, res, next) => {
     }
 })
 
-productsRouter.put("/:productId/reviews/:reviewId", checkReviewSchema, triggerBadRequest, async (req, res, next) => {
+productsRouter.put("/:productId/reviews/:reviewId", checkReviewUpdateSchema, triggerBadRequest, async (req, res, next) => {
     try {
         const products = await getProducts()
         const i = products.findIndex(p => p.id === req.params.productId)

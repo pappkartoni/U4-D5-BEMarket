@@ -102,17 +102,29 @@ const reviewSchema = {
           options: {min: 1, max: 5}
         },
     },
-/*     productId: {
+}
+const reviewUpdateSchema = {
+    comment: {
         in: ["body"],
-        isUUID: {
-          errorMessage: "productId must be UUID",
+        optional: true,
+        isString: {
+          errorMessage: "comment must be String",
         },
-    }, */
+    },
+    rate: {
+        in: ["body"],
+        optional: true,
+        isInt: {
+          errorMessage: "title must be String",
+          options: {min: 1, max: 5}
+        },
+    },
 }
 
 export const checkProductSchema = checkSchema(productSchema)
 export const checkProductUpdateSchema = checkSchema(productUpdateSchema)
 export const checkReviewSchema = checkSchema(reviewSchema)
+export const checkReviewUpdateSchema = checkSchema(reviewUpdateSchema)
 
 export const triggerBadRequest = (req, res, next) => {
     const errors = validationResult(req)
