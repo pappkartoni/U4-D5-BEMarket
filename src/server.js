@@ -1,17 +1,25 @@
-import Express from "express"
 import cors from "cors"
-import { join } from "path"
+import Express from "express"
+import createHttpError from "http-errors"
+import mongoose from "mongoose"
 import {badRequestHandler, unauthorizedHandler, notfoundHandler, genericErrorHandler} from "./errors.js"
 import productsRouter from "./api/products/index.js"
 
-const publicPath = join(process.cwd(), "./public")
-export const port = 3420
-
 const server = Express()
-server.use(Express.static(publicPath))
-server.use(cors())
-server.use(Express.json())
+const port = process.env.PORT || 3420
+const whitelist = [process.env.FE_DEV_URL, process.env.FE_PROD_URL]
 
+server.use(cors({
+    origin: (currentOrigin, corsNext) => {
+        if (!currentOrigin || whitelist.indexOf(currentOrigin) !== -1) {
+            corsNext(null, true)
+        } else {
+            corsNext(createHttpError(400, `Origin ${currentOrigin} is not whitelisted.`))
+        }
+    }
+}))
+
+server.use(Express.json())
 server.use("/products", productsRouter)
 
 server.use(badRequestHandler)
@@ -19,6 +27,12 @@ server.use(unauthorizedHandler)
 server.use(notfoundHandler)
 server.use(genericErrorHandler)
 
-server.listen(port, () => {
-    console.log(`Server started at Port: ${port}`)
+mongoose.connect(process.env.MONGO_URL)
+
+mongoose.connection.on("connected", () => {
+    console.log("Connected to MongoDB")
+    server.listen(port, () => {
+        console.log(`Server started on Port ${port}.`)
+    })
+
 })

@@ -23,6 +23,6 @@ export const badRequestHandler = (err, req, res, next) => {
   }
   
   export const genericErrorHandler = (err, req, res, next) => {
-    res.status(500).send({ success: false, message: "Check the backend console to see what's going on" })
+    res.status(500).send({ success: false, message: "We done fucked up" })
     console.log(err)
   }

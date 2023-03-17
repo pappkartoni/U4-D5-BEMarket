@@ -1,3 +1,5 @@
+// obsolete
+/* 
 import { checkSchema, validationResult } from "express-validator"
 import createHttpError from "http-errors"
 
@@ -134,4 +136,4 @@ export const triggerBadRequest = (req, res, next) => {
     } else {
         next(createHttpError(400, "Errors during validation", { errorsList: errors.array() }))
     }
-}
+} */

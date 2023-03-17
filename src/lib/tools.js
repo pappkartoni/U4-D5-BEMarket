@@ -1,3 +1,5 @@
+// obsolete
+/* 
 import fs from "fs-extra"
 import {fileURLToPath} from "url"
 import { dirname, join } from "path"
@@ -17,4 +19,4 @@ export const setProducts = products => writeJSON(productsPath, products)
 export const saveProductImage = (fileName, fileContent) => writeFile(join(productsImagePath, fileName), fileContent)
 
 export const getReviews = () => readJSON(reviewsPath)
-export const setReviews = products => writeJSON(reviewsPath, products)
+export const setReviews = products => writeJSON(reviewsPath, products) */
